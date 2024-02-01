@@ -13,6 +13,11 @@ const hiddenLayerNeuronCount = 2;
 // Заполняются рандомно при инициализации сети
 const hiddenLayerNeuronWeights = [];
 
+// Веса от скрытого слоя к выходному.
+// Массив длиной в {hiddenLayerNeuronCount} элементов.
+// Заполняются рандомно при инициализации сети
+const outputLayerNeuronWeights = [];
+
 // Сигмоидальная функция активации для скрытых слоев
 const getProcessedValueByHiddenActivation = (value) => {
   return 1 / (1 + Math.exp(-value));
@@ -36,14 +41,17 @@ const initWeights = () => {
     hiddenLayer++
   ) {
     for (let neuron = 0; neuron < inputCount; neuron++) {
-      if (!Array.isArray(hiddenLayerNeuronWeights[hiddenLayer]))
+      if (!Array.isArray(hiddenLayerNeuronWeights[hiddenLayer])) {
         hiddenLayerNeuronWeights[hiddenLayer] = [];
+      }
 
       hiddenLayerNeuronWeights[hiddenLayer][neuron] = getRandomNumber();
     }
+
+    outputLayerNeuronWeights[hiddenLayer] = getRandomNumber();
   }
 };
 
-console.log(hiddenLayerNeuronWeights);
+console.log({ hiddenLayerNeuronWeights, outputLayerNeuronWeights });
 initWeights();
-console.log(hiddenLayerNeuronWeights);
+console.log({ hiddenLayerNeuronWeights, outputLayerNeuronWeights });
