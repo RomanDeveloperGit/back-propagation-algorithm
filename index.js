@@ -65,25 +65,32 @@ const forwardPropagation = (data) => {
     });
   });
 
-  const outputLayerReport = {
-    value: outputLayerNeuronWeights.reduce(
-      (acc, weight, index) =>
-        acc + weight * hiddenLayerReport[index].activatedValue,
-      0
-    ),
-  };
-
-  outputLayerReport.activatedValue = getProcessedValueByActivation(
-    outputLayerReport.value
+  const sumOutputWeights = outputLayerNeuronWeights.reduce(
+    (acc, weight, index) =>
+      acc + weight * hiddenLayerReport[index].activatedValue,
+    0
   );
 
-  outputLayerReport.error =
-    data.expectedOutput - outputLayerReport.activatedValue;
+  const outputLayerReport = {
+    value: sumOutputWeights,
+    activatedValue: getProcessedValueByActivation(outputLayerReport.value),
+    error: data.expectedOutput - outputLayerReport.activatedValue,
+  };
 
   return {
     hiddenLayerReport,
     outputLayerReport,
   };
+};
+
+const backPropagation = () => {
+  // Позволим себе такое небрежное копирование, чтобы время не терять)
+  const copiedHiddenLayerNeuronWeights = JSON.parse(
+    JSON.stringify(hiddenLayerNeuronWeights)
+  );
+  const copiedOutputLayerNeuronWeights = JSON.parse(
+    JSON.stringify(outputLayerNeuronWeights)
+  );
 };
 
 console.log({ hiddenLayerNeuronWeights, outputLayerNeuronWeights });
@@ -99,9 +106,8 @@ const dataset = [
   { input: [1, 0, 1, 0, 1], expectedOutput: 1 },
   { input: [1, 0, 1, 0, 0], expectedOutput: 0 },
   { input: [0, 0, 0, 1, 0], expectedOutput: 0 },
-  { input: [0.5, 0.5, 0.5, 0.5, 0.5], expectedOutput: 0 }
+  { input: [0.5, 0.5, 0.5, 0.5, 0.5], expectedOutput: 0 },
 ];
 // Ожидаем, что для [1, 1, 0, 1, 1] = 1
 
-console.log(forwardPropagation(dataset[1]).outputLayerReport.activatedValue)
-
+console.log(forwardPropagation(dataset[1]).outputLayerReport.activatedValue);
