@@ -19,14 +19,22 @@ const hiddenLayerNeuronWeights = [];
 const outputLayerNeuronWeights = [];
 
 // Сигмоидальная функция активации для слоев
-const getProcessedValueByActivation = (value) => {
-  return 1 / (1 + Math.exp(-value));
+const getProcessedValueByActivation = (x) => {
+  return 1 / (1 + Math.exp(-x));
+};
+
+// Производная функции активации
+// Как известно: f'(x) = f(x) * (1 - f(x)) (В случае сигмоидальной функции!)
+const getDifferentialProcessedValueByActivation = (x) => {
+  const y = getProcessedValueByActivation(x);
+
+  return y * (1 - y);
 };
 
 // Утилитки:
 
 const getRandomNumber = () => {
-  return Math.random().toFixed(3);
+  return -Math.random().toFixed(3);
 };
 
 // Далее для обучения код:
@@ -73,9 +81,11 @@ const forwardPropagation = (data) => {
 
   const outputLayerReport = {
     value: sumOutputWeights,
-    activatedValue: getProcessedValueByActivation(outputLayerReport.value),
-    error: data.expectedOutput - outputLayerReport.activatedValue,
+    activatedValue: getProcessedValueByActivation(sumOutputWeights),
   };
+
+  outputLayerReport.error =
+    data.expectedOutput - outputLayerReport.activatedValue;
 
   return {
     hiddenLayerReport,
